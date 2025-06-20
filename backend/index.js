@@ -100,7 +100,7 @@ app.post('/register', async (req, res) => {
         const token = jwt.sign(
             { id: user._id, email }, 
             process.env.SECRET_KEY, 
-            { expiresIn: '1h' }
+            { expiresIn: '24h' }
         );
 
         // send response to the frontend
@@ -123,6 +123,49 @@ app.post('/register', async (req, res) => {
     }
 });
 
+app.post("/login" , async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        // check if email and password are provided
+        if(!(email && password)) {
+            return res.status(400).send('Please provide both email and password');
+        }
+        // check if the user exists
+        const user = await User.findOne({ email: email.trim().toLowerCase() });
+        if (!user) {
+            return res.status(400).send('User not registered');
+        }
+
+        // check if the password is correct
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).send('Invalid credentials');
+        }
+
+        // generate a token for user and send it
+        const token = jwt.sign(
+            { id: user._id, email },
+            process.env.SECRET_KEY,
+            { expiresIn: '24h' }
+        );
+
+        // send response to the frontend
+        res.status(200).json({
+            message: 'Login successful',
+            user: {
+                id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                createdAt: user.createdAt
+            },
+            token: token
+        });
+    } catch (error) {
+        console.error('Error occurred:', error);
+        process.exit(1); // Exit the process with failure
+    }
+});
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
