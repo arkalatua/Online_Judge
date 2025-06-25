@@ -5,11 +5,15 @@ import logo from '../../assets/logo.png';
 
 const RegisterForm = ({ onSuccessfulSubmit }) => {
     const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
         email: '',
         password: ''
     });
 
     const [errors, setErrors] = useState({
+        firstName: '',
+        lastName: '',
         email: '',
         password: ''
     });
@@ -76,9 +80,9 @@ const RegisterForm = ({ onSuccessfulSubmit }) => {
 
     return (
         <>
-            <div className="flex justify-center items-center h-20  bg-gray-200">
+            <div className="flex justify-center items-center h-20   bg-gray-200">
             </div>
-            <div className="login-form">
+            <div className="register-form">
                 <div className="bg-gray-200 min-h-screen flex items-center">
                     <div className="w-full">
                         <div className="bg-white p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/2">
