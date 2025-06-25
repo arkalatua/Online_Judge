@@ -3,13 +3,17 @@ import { registerUpload } from '../../service/api';
 import logo from '../../assets/logo.png';
 
 
-const RegisterForm = ({ onSuccessfulSubmit }) => {
+const LoginForm = ({ onSuccessfulSubmit }) => {
     const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
         email: '',
         password: ''
     });
 
     const [errors, setErrors] = useState({
+        firstName: '',
+        lastName: '',
         email: '',
         password: ''
     });
@@ -73,50 +77,18 @@ const RegisterForm = ({ onSuccessfulSubmit }) => {
             }
         }
     };
-
     return (
         <>
-            <div className="flex justify-center items-center h-20  bg-gray-200">
+            <div className="flex justify-center items-center h-20   bg-gray-200">
             </div>
-            <div className="login-form">
+            <div className="register-form">
                 <div className="bg-gray-200 min-h-screen flex items-center">
                     <div className="w-full">
-                        <div className="bg-white p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/2">
+                        <div className="bg-white p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/3">
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-5">
                                     <img src={logo} alt='logo' className='w-40 h-30 mx-auto mb-5' />
-                                    <div className="font-roboto text-center text-2xl font-bold mb-5 text-gray-700">Register</div>
-                                    <label htmlFor="firstName" className="font-roboto block mb-2 font-bold text-gray-600">First Name</label>
-                                    <input
-                                        type="text"
-                                        id="firstName"
-                                        name="firstName"
-                                        value={formData.firstName}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        onKeyDown={handleKeyDown}
-                                        placeholder="Put in your first name"
-                                        className={`border ${errors.firstName ? 'border-red-300' : 'border-gray-300'} shadow p-3 w-full rounded mb-`}
-                                    />
-                                    {errors.firstName && <p className="text-sm text-red-400 mt-2">{errors.firstName}</p>}
                                 </div>
-
-                                <div className="mb-5">
-                                    <label htmlFor="lastName" className="font-roboto block mb-2 font-bold text-gray-600">Last Name</label>
-                                    <input
-                                        type="text"
-                                        id="lastName"
-                                        name="lastName"
-                                        value={formData.lastName}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        onKeyDown={handleKeyDown}
-                                        placeholder="Put in your last name"
-                                        className={`border ${errors.lastName ? 'border-red-300' : 'border-gray-300'} shadow p-3 w-full rounded mb-`}
-                                    />
-                                    {errors.lastName && <p className="text-sm text-red-400 mt-2">{errors.lastName}</p>}
-                                </div>
-
                                 <div className="mb-5">
                                     <label htmlFor="email" className="font-roboto block mb-2 font-bold text-gray-600">Email Address:</label>
                                     <input
@@ -149,8 +121,8 @@ const RegisterForm = ({ onSuccessfulSubmit }) => {
                                     {errors.password && <p className="text-sm text-red-400 mt-2">{errors.password}</p>}
                                 </div>
                                 <div className="text-right mb-5">
-                                    <span className="font-roboto text-gray-600">Already have an account?</span>
-                                    <a href="/login" className="text-blue-500 hover:underline">Login here</a>
+                                    <span className="font-roboto text-gray-600">Don't have an account?</span>
+                                    <a href="/register" className="text-blue-500 hover:underline">Register here</a>
                                 </div>
                                 <button type="submit" className="font-roboto block w-full bg-blue-500 text-white font-bold p-4 rounded-lg hover:bg-blue-600 transition">Submit</button>
                             </form>
@@ -161,7 +133,8 @@ const RegisterForm = ({ onSuccessfulSubmit }) => {
             <div className="flex justify-center items-center h-20 bg-gray-200">
             </div>
         </>
-    );
-};
 
-export default RegisterForm;
+    );
+}
+
+export default LoginForm;

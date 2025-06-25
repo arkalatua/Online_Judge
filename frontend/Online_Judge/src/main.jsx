@@ -4,6 +4,7 @@ import './index.css'
 import RegisterPage from './components/main_components/RegisterPage.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HomePage from './components/main_components/HomePage.jsx';
+import LoginPage from './components/main_components/LoginPage.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -11,6 +12,7 @@ createRoot(document.getElementById('root')).render(
     <Routes>
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/home" element={<HomePage />} />
+      <Route path="/login" element={<LoginPage />} />
     </Routes>
   </BrowserRouter>
   </StrictMode>,
