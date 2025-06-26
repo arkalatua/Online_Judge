@@ -18,6 +18,8 @@ const RegisterForm = ({ onSuccessfulSubmit }) => {
         password: ''
     });
 
+    const [errMessage, setErrMessage] = useState('');
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -74,6 +76,7 @@ const RegisterForm = ({ onSuccessfulSubmit }) => {
                 onSuccessfulSubmit(response.data);
             } catch (error) {
                 console.error("Registration failed:", error);
+                setErrMessage(error.response?.data?.message || 'Registration failed. Please try again.');
             }
         }
     };
@@ -155,6 +158,9 @@ const RegisterForm = ({ onSuccessfulSubmit }) => {
                                 <div className="text-right mb-5">
                                     <span className="font-roboto text-gray-600">Already have an account?</span>
                                     <a href="/login" className="text-blue-500 hover:underline">Login here</a>
+                                </div>
+                                <div>
+                                    {errMessage && <p className="font-roboto text-1xl text-center text-red-400 mt-1 mb-2">{errMessage}</p>}
                                 </div>
                                 <button type="submit" className="font-roboto block w-full bg-blue-500 text-white font-bold p-4 rounded-lg hover:bg-blue-600 transition">Submit</button>
                             </form>
