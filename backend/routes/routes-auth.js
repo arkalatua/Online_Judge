@@ -1,5 +1,5 @@
 const express = require("express");
-const { homePage , registerPage , registerUser , loginPage , loginUser } = require("../controller/oj-controller");
+const { homePage , registerPage , registerUser , loginPage , loginUser } = require("../controller/oj-controller-auth");
 const router = express.Router();
 
 
