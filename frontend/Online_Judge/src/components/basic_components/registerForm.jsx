@@ -88,7 +88,7 @@ const RegisterForm = ({ onSuccessfulSubmit }) => {
             <div className="register-form">
                 <div className="bg-gray-200 min-h-screen flex items-center">
                     <div className="w-full">
-                        <div className="bg-white p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/2">
+                        <div className="bg-white p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/3">
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-5">
                                     <img src={logo} alt='logo' className='w-40 h-30 mx-auto mb-5' />

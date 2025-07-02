@@ -25,3 +25,16 @@ export const loginUpload = async (data) => {
     throw error;
   }
 }
+
+export const problemUpload = async (data) => {
+  try {
+    const response = await axios.post(import.meta.env.VITE_API_URL + '/problems', data);
+    return response.data;
+  } catch (error) {
+    console.error("Error details:", {
+      request: error.config,
+      response: error.response?.data
+    });
+    throw error;
+  }
+}

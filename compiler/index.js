@@ -2,19 +2,11 @@ const express = require('express');
 const dotenv = require('dotenv');
 const generateFile = require('./generateFile');
 const executeCpp = require('./executeCpp');
-const fs = require('fs');
-const path = require('path');
 
 dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-});
 
 app.post('/run', async (req, res) => {
     const { code, language } = req.body;

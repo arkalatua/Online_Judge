@@ -10,6 +10,7 @@ const includePaths = [
     'C:/msys64/ucrt64/include/c++/15.1.0/x86_64-w64-mingw32'
 ];
 
+
 if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
 }
@@ -17,11 +18,6 @@ if (!fs.existsSync(outputDir)) {
 async function executeCpp(filePath) {
     const fileId = path.basename(filePath, '.cpp');
     const outputFilePath = path.join(outputDir, `${fileId}.exe`);
-
-    // Debug info
-    console.log('Compiling:', filePath);
-    console.log('Output to:', outputFilePath);
-    console.log('Compiler:', gppPath);
 
     // Compilation
     const compileResult = spawnSync(
