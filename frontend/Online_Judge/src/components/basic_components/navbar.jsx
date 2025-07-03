@@ -1,12 +1,23 @@
 import { initFlowbite } from 'flowbite';
-import React, { useEffect } from 'react';
+import { useEffect , useState} from 'react';
 import logo from '../../assets/logo.png';
+import { useNavigate } from 'react-router-dom';
+import { logout } from '../../store/authSlice';
+import { useDispatch , useSelector } from 'react-redux';
 
 const Navbar = () => {
-    // Initialize Flowbite when the component mounts
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.auth.user);
+
     useEffect(() => {
         initFlowbite();
     }, []);
+
+    const handleLogout = () => {
+        dispatch(logout());
+        navigate('/login');
+    };
 
     return (
         <nav className="bg-white border-gray-200">
@@ -34,6 +45,26 @@ const Navbar = () => {
                         <li>
                             <a href="/discuss" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-500 md:dark:hover:text-blue-700 dark:hover:bg-gray-100 dark:hover:text-gray-500 md:dark:hover:bg-transparent">Discuss</a>
                         </li>
+                        {user ? (
+                            <>
+                                <li className="text-gray-500">Hi, {user}</li>
+                                <li>
+                                    <button onClick={() => navigate('/profile')} className="text-blue-600 hover:underline">Profile</button>
+                                </li>
+                                <li>
+                                    <button onClick={handleLogout} className="text-red-500 hover:underline">Logout</button>
+                                </li>
+                            </>
+                        ) : (
+                            <>
+                                <li>
+                                    <button onClick={() => navigate('/login')} className="text-blue-600 hover:underline">Sign In</button>
+                                </li>
+                                <li>
+                                    <button onClick={() => navigate('/register')} className="text-blue-600 hover:underline">Register</button>
+                                </li>
+                            </>
+                        )}
                     </ul>
                 </div>
             </div>

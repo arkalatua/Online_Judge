@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { loginUpload } from '../../service/api';
 import logo from '../../assets/logo.png';
+import { useDispatch } from "react-redux";
+import { login } from '../../store/authSlice';
 
-
-const LoginForm = ({ onSuccessfulSubmit }) => {
+const LoginForm = ({ onSuccessfulSubmit}) => {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -13,6 +14,8 @@ const LoginForm = ({ onSuccessfulSubmit }) => {
         email: '',
         password: ''
     });
+
+    const dispatch = useDispatch();
 
     const [errMessage, setErrMessage] = useState('');
 
@@ -69,6 +72,7 @@ const LoginForm = ({ onSuccessfulSubmit }) => {
             // Form submission logic here
             try {
                 const response = await loginUpload(formData);
+                dispatch(login({ user: formData.email }));
                 onSuccessfulSubmit(response.data);
             } catch (error) {
                 console.error("Login failed:", error);

@@ -1,3 +1,5 @@
+import Footer from "../basic_components/footer";
+import Navbar from "../basic_components/navbar";
 import ProblemsList from "../basic_components/problemsList";
 import { useNavigate } from 'react-router-dom';
 
@@ -7,9 +9,18 @@ const ProblemPage = () => {
         navigate('/home');
     }
     return (
-        <div>
-            <ProblemsList onSuccessfulSubmit={handleSuccessfulSubmit} />
-        </div>
+        <>
+            <div className="nav-bar">
+                <Navbar />
+            </div>
+            <div className="problem-form">
+                <ProblemsList onSuccessfulSubmit={handleSuccessfulSubmit}/>
+            </div>
+            <div className="footer">
+                <Footer />
+            </div>
+        </>
+
     );
 }
 
