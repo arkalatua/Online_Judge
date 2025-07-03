@@ -1,6 +1,6 @@
 import Footer from "../basic_components/footer";
 import Navbar from "../basic_components/navbar";
-import ProblemsList from "../basic_components/problemsList";
+import ProblemsList from "../basic_components/createProblem";
 import { useNavigate } from 'react-router-dom';
 
 const ProblemPage = () => {

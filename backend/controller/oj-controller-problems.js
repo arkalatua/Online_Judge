@@ -1,4 +1,5 @@
 const Problem = require('../models/problem');
+const user = require('../models/user');
 
 
 const problemsPage = (req, res) => {
@@ -6,7 +7,6 @@ const problemsPage = (req, res) => {
         res.send('Problems Page');
     } catch (error) {
         console.error('Error occurred:', error);
-        process.exit(1); // Exit the process with failure
     }
 };
 
@@ -16,7 +16,6 @@ const problemPage = (req, res) => {
         res.send(`Problem Page for ID: ${problemId}`);
     } catch (error) {
         console.error('Error occurred:', error);
-        process.exit(1); // Exit the process with failure
     }
 };
 
@@ -26,18 +25,23 @@ const addProblemPage = (req, res) => {
         res.send('Add Problem Page');
     } catch (error) {
         console.error('Error occurred:', error);
-        process.exit(1); // Exit the process with failure
     }
 };
 
 const createProblem = async (req, res) => {
     try {
-        const { name, difficulty, statement, sampleTestCases, constraint, hiddenTestCases } = req.body;
+        const { name, difficulty, statement, sampleTestCases, constraint, hiddenTestCases, email } = req.body;
+        console.log({ name, difficulty, statement, sampleTestCases, constraint, hiddenTestCases, email });
+
         // Validate required fields
-        if (!name || !difficulty || !statement || !sampleTestCases || !constraint || !hiddenTestCases) {
+        if (!name || !difficulty || !statement || !sampleTestCases || !constraint || !hiddenTestCases || !email) {
             return res.status(400).send('All fields are required');
         }
-
+        const _id = await fetchUserIdFromEmail(email);
+        if (!_id) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+        console.log('User ID:', _id);
         // Validate test cases are arrays
         if (!Array.isArray(sampleTestCases)) {
             return res.status(400).send('sampleTestCases must be an array');
@@ -48,12 +52,13 @@ const createProblem = async (req, res) => {
 
         // Create new problem object
         const newProblem = {
+            userId: _id,
             name: name.trim(),
             difficulty: difficulty.trim(),
             statement: statement.trim(),
-            sampleTestcases: sampleTestCases, // Don't trim arrays!
+            sampleTestcases: sampleTestCases,
             constraints: constraint.trim(),
-            hiddenTestcases: hiddenTestCases  // Don't trim arrays!
+            hiddenTestcases: hiddenTestCases
         };
 
         // Save to database
@@ -71,6 +76,16 @@ const createProblem = async (req, res) => {
         });
     }
 };
+
+const fetchUserIdFromEmail = async (email) => {
+    if (!email) throw new Error("Email is required");
+
+    const user_ = await user.findOne({ email: email.trim().toLowerCase() });
+    if (!user_) throw new Error("User not found");
+
+    return user_._id;
+};
+
 
 module.exports = {
     problemsPage,

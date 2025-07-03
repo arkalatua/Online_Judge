@@ -10,7 +10,6 @@ const homePage = (req, res) => {
         res.send('Hello, World!');
     } catch (error) {
         console.error('Error occurred:', error);
-        process.exit(1); // Exit the process with failure
     }
 };
 
@@ -19,7 +18,6 @@ const registerPage = (req, res) => {
         res.send('Register Page');
     } catch (error) {
         console.error('Error occurred:', error);
-        process.exit(1); // Exit the process with failure
     }
 };
 
@@ -81,25 +79,25 @@ const registerUser = async (req, res) => {
                     message: 'Password must be strong: should include (uppercase, lowercase, number, symbol and must be min 8 chars)'
                 });
             }
-            if(validation1.fails()) {
+            if (validation1.fails()) {
                 return res.status(400).json({
                     field: 'firstName',
                     message: 'First name is required and should contain only alphabets'
                 });
             }
-            if(validation2.fails()) {
+            if (validation2.fails()) {
                 return res.status(400).json({
                     field: 'lastName',
                     message: 'Last name is required and should contain only alphabets'
                 });
             }
-            if(validation3.fails()) {
+            if (validation3.fails()) {
                 return res.status(400).json({
                     field: 'email',
                     message: 'Email is required and should be a valid email address'
                 });
             }
-            if(validation4.fails()) {
+            if (validation4.fails()) {
                 return res.status(400).json({
                     field: 'password',
                     message: 'Password must be strong: should include (uppercase, lowercase, number, symbol and must be min 8 chars)'
@@ -112,7 +110,7 @@ const registerUser = async (req, res) => {
         if (existingUser) {
             // send error response
             return res.status(400).json({
-                message:'User with the same email id is already registered',
+                message: 'User with the same email id is already registered',
                 field: 'email'
             });
         }
@@ -120,12 +118,12 @@ const registerUser = async (req, res) => {
         // hashing/encrypting the password
         const saltRounds = 12;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        
+
         // convert firstName and lastName to title case
         const toTitleCase = (str) => {
             return str[0].toUpperCase() + str.slice(1).toLowerCase();
         };
-        
+
         // save user in the db 
         const user = await User.create({
             firstName: toTitleCase(firstName.trim()),
@@ -157,7 +155,6 @@ const registerUser = async (req, res) => {
         });
     } catch (error) {
         console.error('Error occurred:', error);
-        process.exit(1); // Exit the process with failure
     }
 };
 
@@ -166,7 +163,6 @@ const loginPage = (req, res) => {
         res.send('Login Page');
     } catch (error) {
         console.error('Error occurred:', error);
-        process.exit(1); // Exit the process with failure
     }
 };
 
@@ -175,10 +171,10 @@ const loginUser = async (req, res) => {
         const { email, password } = req.body;
 
         // check if email and password are provided
-        if(!(email && password)) {
+        if (!(email && password)) {
             return res.status(400).json({
-                message:'Please provide both email and password'
-        });
+                message: 'Please provide both email and password'
+            });
         }
         // check if the user exists
         const user = await User.findOne({ email: email.trim().toLowerCase() });
@@ -187,6 +183,8 @@ const loginUser = async (req, res) => {
                 message: 'User not registered'
             });
         }
+
+        const name = user.firstName + ' ' + user.lastName;
 
         // check if the password is correct
         const isMatch = await bcrypt.compare(password, user.password);
@@ -202,6 +200,7 @@ const loginUser = async (req, res) => {
             process.env.SECRET_KEY,
             { expiresIn: '24h' }
         );
+        
 
         // send response to the frontend
         res.status(200).json({
@@ -217,7 +216,28 @@ const loginUser = async (req, res) => {
         });
     } catch (error) {
         console.error('Error occurred:', error);
-        process.exit(1); // Exit the process with failure
+    }
+};
+
+const getUserNameFromEmail = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+
+        const user = await User.findOne({ email: email.trim().toLowerCase() });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({
+            name: `${user.firstName} ${user.lastName}`
+        });
+    } catch (error) {
+        console.error("Error in getUserNameFromEmail:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 };
 
@@ -227,5 +247,6 @@ module.exports = {
     registerPage,
     registerUser,
     loginPage,
-    loginUser
+    loginUser,
+    getUserNameFromEmail
 };

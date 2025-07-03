@@ -73,6 +73,7 @@ const LoginForm = ({ onSuccessfulSubmit}) => {
             try {
                 const response = await loginUpload(formData);
                 dispatch(login({ user: formData.email }));
+                localStorage.setItem("authToken", formData.email);
                 onSuccessfulSubmit(response.data);
             } catch (error) {
                 console.error("Login failed:", error);

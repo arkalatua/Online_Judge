@@ -1,21 +1,52 @@
 import { initFlowbite } from 'flowbite';
-import { useEffect , useState} from 'react';
+import { useEffect, useState } from 'react';
 import logo from '../../assets/logo.png';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../../store/authSlice';
-import { useDispatch , useSelector } from 'react-redux';
+import { login, logout } from '../../store/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Navbar = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.user);
+    const [name, setName] = useState('');
+
+    const fetchName = async () => {
+        const email = localStorage.getItem("authToken");
+        if (!email) return;
+
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/getName`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email.trim() })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setName(data.name);
+            } else {
+                console.error("Failed to fetch name:", data.message);
+            }
+        } catch (err) {
+            console.error("Error fetching name:", err);
+        }
+    };
 
     useEffect(() => {
         initFlowbite();
+        const email = localStorage.getItem("authToken");
+        if (email) {
+            dispatch(login({ user: email }));
+            fetchName();
+        }
     }, []);
 
     const handleLogout = () => {
         dispatch(logout());
+        localStorage.removeItem("authToken");
+        setName('');
         navigate('/login');
     };
 
@@ -47,9 +78,9 @@ const Navbar = () => {
                         </li>
                         {user ? (
                             <>
-                                <li className="text-gray-500">Hi, {user}</li>
+                                
                                 <li>
-                                    <button onClick={() => navigate('/profile')} className="text-blue-600 hover:underline">Profile</button>
+                                    <button onClick={() => navigate('/profile')} className="text-blue-600 hover:underline">{name}</button>
                                 </li>
                                 <li>
                                     <button onClick={handleLogout} className="text-red-500 hover:underline">Logout</button>

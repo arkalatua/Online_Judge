@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import logo from '../../assets/logo.png';
 import { problemUpload } from '../../service/api';
-
+import { useSelector } from 'react-redux';
 
 const ProblemsList = ({ onSuccessfulSubmit }) => {
 
@@ -22,6 +22,8 @@ const ProblemsList = ({ onSuccessfulSubmit }) => {
         constraints: '',
         hiddenTestCases: []
     });
+
+    const user = useSelector((state) => state.auth.user);
 
     const [errMessage, setErrMessage] = useState('');
     // Handle adding new test case fields
@@ -101,15 +103,15 @@ const ProblemsList = ({ onSuccessfulSubmit }) => {
     };
 
     const validateField = (name, value) => {
-    if (typeof value === 'string' && !value.trim()) {
-        setErrors(prev => ({
-            ...prev,
-            [name]: `${name.charAt(0).toUpperCase() + name.slice(1)} is required`
-        }));
-        return false;
-    }
-    return true;
-};
+        if (typeof value === 'string' && !value.trim()) {
+            setErrors(prev => ({
+                ...prev,
+                [name]: `${name.charAt(0).toUpperCase() + name.slice(1)} is required`
+            }));
+            return false;
+        }
+        return true;
+    };
 
 
     const handleBlur = (e) => {
@@ -173,11 +175,18 @@ const ProblemsList = ({ onSuccessfulSubmit }) => {
             }));
             isValid = false;
         }
+        if (!user) {
+            setErrMessage('Please login to add a problem.');
+            isValid = false;
+        }
+
         if (isValid) {
             // Form submission logic here
             try {
                 console.log('Form Data:', formData);
-                const response = await problemUpload(formData);
+                const response = await problemUpload({ ...formData,
+                    email: user
+                });
                 onSuccessfulSubmit(response.data);
             } catch (error) {
                 console.error("Couldn't add problem :( :", error);
@@ -384,6 +393,14 @@ const ProblemsList = ({ onSuccessfulSubmit }) => {
                                     {errMessage && <p className="font-roboto text-1xl text-center text-red-400 mt-1 mb-2">{errMessage}</p>}
                                 </div>
                                 <button type="submit" className="font-roboto block w-full bg-blue-500 text-white font-bold p-4 rounded-lg hover:bg-blue-600 transition">Add</button>
+                                {user ? (
+                                    <>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p className="font-roboto text-1xl text-center text-red-500 mt-2">Please login to add a problem.</p>
+                                    </>
+                                )}
                             </form>
                         </div>
                     </div>
