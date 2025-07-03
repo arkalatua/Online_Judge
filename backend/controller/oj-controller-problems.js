@@ -1,6 +1,6 @@
 const Problem = require('../models/problem');
 
-let problem_id = 1;
+
 const problemsPage = (req, res) => {
     try {
         res.send('Problems Page');
@@ -32,30 +32,28 @@ const addProblemPage = (req, res) => {
 
 const createProblem = async (req, res) => {
     try {
-        const { name, difficulty, statement, sample_testcases, constraints, hidden_testcases } = req.body;
-        
+        const { name, difficulty, statement, sampleTestCases, constraint, hiddenTestCases } = req.body;
         // Validate required fields
-        if (!name || !difficulty || !statement || !sample_testcases || !constraints || !hidden_testcases) {
+        if (!name || !difficulty || !statement || !sampleTestCases || !constraint || !hiddenTestCases) {
             return res.status(400).send('All fields are required');
         }
 
         // Validate test cases are arrays
-        if (!Array.isArray(sample_testcases)) {
-            return res.status(400).send('sample_testcases must be an array');
+        if (!Array.isArray(sampleTestCases)) {
+            return res.status(400).send('sampleTestCases must be an array');
         }
-        if (!Array.isArray(hidden_testcases)) {
-            return res.status(400).send('hidden_testcases must be an array');
+        if (!Array.isArray(hiddenTestCases)) {
+            return res.status(400).send('hiddenTestCases must be an array');
         }
 
         // Create new problem object
         const newProblem = {
-            problemId: problem_id++,
             name: name.trim(),
             difficulty: difficulty.trim(),
             statement: statement.trim(),
-            sampleTestcases: sample_testcases, // Don't trim arrays!
-            constraints: constraints.trim(),
-            hiddenTestcases: hidden_testcases  // Don't trim arrays!
+            sampleTestcases: sampleTestCases, // Don't trim arrays!
+            constraints: constraint.trim(),
+            hiddenTestcases: hiddenTestCases  // Don't trim arrays!
         };
 
         // Save to database

@@ -10,12 +10,12 @@ const mongoose = require('mongoose');
 // Hidden Testcases: collection (test_case , output)
 
 const problemSchema = new mongoose.Schema({
-    problemId: {
-        type: Number,
-        unique: true,
-        required: true,
-        trim: true
-    },
+    // problemId: {
+    //     type: Number,
+    //     unique: true,
+    //     required: true,
+    //     trim: true
+    // },
     // userId: {
     //     type: mongoose.Schema.Types.ObjectId,
     //     ref: 'User',
@@ -48,8 +48,7 @@ const problemSchema = new mongoose.Schema({
             required: true
         },
         explanation: {
-            type: String,
-            required: true
+            type: String
         }
     }],
     constraints: {

@@ -3,15 +3,15 @@ import logo from '../../assets/logo.png';
 import { problemUpload } from '../../service/api';
 
 
-const ProblemsList = () => {
+const ProblemsList = ({ onSuccessfulSubmit }) => {
 
     const [formData, setFormData] = useState({
         name: '',
         difficulty: '',
         statement: '',
-        sampleTestCases: [{ test_case: '', output: '', explanation: '' }], 
-        constraints: '',
-        hiddenTestCases: [{ test_case: '', output: '' }] 
+        sampleTestCases: [{ test_case: '', output: '', explanation: '' }],
+        constraint: '',
+        hiddenTestCases: [{ test_case: '', output: '' }]
     });
 
     const [errors, setErrors] = useState({
@@ -54,7 +54,36 @@ const ProblemsList = () => {
             ...prev,
             [type + 'TestCases']: updatedTestCases
         }));
+        // Clear error when user starts typing
+        if (errors[type + 'TestCases'][index]) {
+            setErrors(prev => ({
+                ...prev,
+                [type + 'TestCases']: prev[type + 'TestCases'].filter((_, i) => i !== index)
+            }));
+        }
+
+        // Validate the field
+        if (field === 'test_case' && !value.trim()) {
+            setErrors(prev => ({
+                ...prev,
+                [type + 'TestCases']: [
+                    ...prev[type + 'TestCases'],
+                    `Test Case ${index + 1} is required`
+                ]
+            }));
+        }
+        if (field === 'output' && !value.trim()) {
+            setErrors(prev => ({
+                ...prev,
+                [type + 'TestCases']: [
+                    ...prev[type + 'TestCases'],
+                    `Test Case ${index + 1} Output is required`
+                ]
+            }));
+        }
     };
+
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -72,15 +101,16 @@ const ProblemsList = () => {
     };
 
     const validateField = (name, value) => {
-        if (!value.trim()) {
-            setErrors(prev => ({
-                ...prev,
-                [name]: `${name.charAt(0).toUpperCase() + name.slice(1)} is required`
-            }));
-            return false;
-        }
-        return true;
-    };
+    if (typeof value === 'string' && !value.trim()) {
+        setErrors(prev => ({
+            ...prev,
+            [name]: `${name.charAt(0).toUpperCase() + name.slice(1)} is required`
+        }));
+        return false;
+    }
+    return true;
+};
+
 
     const handleBlur = (e) => {
         const { name, value } = e.target;
@@ -100,19 +130,58 @@ const ProblemsList = () => {
 
         // Validate all fields
         Object.entries(formData).forEach(([name, value]) => {
-            if (!validateField(name, value)) {
+            if (typeof value === 'string' && !value.trim()) {
+                isValid = false;
+            }
+        });
+        formData.sampleTestCases.forEach((testCase, index) => {
+            if (!testCase.test_case.trim() || !testCase.output.trim()) {
+                setErrors(prev => ({
+                    ...prev,
+                    sampleTestCases: [
+                        ...prev.sampleTestCases,
+                        `Sample Test Case ${index + 1} is required`
+                    ]
+                }));
+                isValid = false;
+            }
+        });
+        formData.hiddenTestCases.forEach((testCase, index) => {
+            if (!testCase.test_case.trim() || !testCase.output.trim()) {
+                setErrors(prev => ({
+                    ...prev,
+                    hiddenTestCases: [
+                        ...prev.hiddenTestCases,
+                        `Hidden Test Case ${index + 1} is required`
+                    ]
+                }));
                 isValid = false;
             }
         });
 
+        if (!formData.sampleTestCases.length || formData.sampleTestCases.length < 3) {
+            setErrors(prev => ({
+                ...prev,
+                sampleTestCases: ['At least three Sample Test Cases are required']
+            }));
+            isValid = false;
+        }
+        if (!formData.hiddenTestCases.length || formData.hiddenTestCases.length < 2) {
+            setErrors(prev => ({
+                ...prev,
+                hiddenTestCases: ['At least two Hidden Test Cases are required']
+            }));
+            isValid = false;
+        }
         if (isValid) {
             // Form submission logic here
             try {
+                console.log('Form Data:', formData);
                 const response = await problemUpload(formData);
                 onSuccessfulSubmit(response.data);
             } catch (error) {
-                console.error("Registration failed:", error);
-                setErrMessage(error.response?.data?.message || 'Registration failed. Please try again.');
+                console.error("Couldn't add problem :( :", error);
+                setErrMessage(error.response?.data?.message || 'Couldn\'t add problem. Please try again.');
             }
         }
     };
@@ -128,7 +197,7 @@ const ProblemsList = () => {
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-5">
                                     <img src={logo} alt='logo' className='w-40 h-30 mx-auto mb-5' />
-                                    <div className="font-roboto text-center text-2xl font-bold mb-5 text-gray-700">Register</div>
+                                    <div className="font-roboto text-center text-2xl font-bold mb-5 text-gray-700">ADD NEW PROBLEM!!!</div>
                                     <label htmlFor="firstName" className="font-roboto block mb-2 font-bold text-gray-600">Name for the Problem</label>
                                     <input
                                         type="text"
@@ -145,18 +214,22 @@ const ProblemsList = () => {
                                 </div>
 
                                 <div className="mb-5">
-                                    <label htmlFor="difficulty" className="font-roboto block mb-2 font-bold text-gray-600">Difficulty</label>
-                                    <input
-                                        type="text"
+                                    <label htmlFor="difficulty" className="font-roboto block mb-2 font-bold text-gray-600">
+                                        Difficulty
+                                    </label>
+                                    <select
                                         id="difficulty"
                                         name="difficulty"
                                         value={formData.difficulty}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
-                                        onKeyDown={handleKeyDown}
-                                        placeholder="Put in the difficulty level"
                                         className={`border ${errors.difficulty ? 'border-red-300' : 'border-gray-300'} shadow p-3 w-full rounded mb-`}
-                                    />
+                                    >
+                                        <option value="">Select difficulty</option>
+                                        <option value="Easy">Easy</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Hard">Hard</option>
+                                    </select>
                                     {errors.difficulty && <p className="text-sm text-red-400 mt-2">{errors.difficulty}</p>}
                                 </div>
 
@@ -191,7 +264,7 @@ const ProblemsList = () => {
                                     />
                                     {errors.constraint && <p className="text-sm text-red-400 mt-2">{errors.constraint}</p>}
                                 </div>
-                                
+
                                 {/* Sample Test Cases Section */}
                                 <div className="mb-5">
                                     <label className="font-roboto block mb-2 font-bold text-gray-600">
@@ -200,7 +273,9 @@ const ProblemsList = () => {
                                     {formData.sampleTestCases.map((testCase, index) => (
                                         <div key={`sample-${index}`} className="mb-4 p-3 border rounded">
                                             <div className="mb-3">
-                                                <label className="block text-sm text-gray-600 mb-1">Test Case</label>
+                                                <div className='flex justify-between items-center mb-2'>
+                                                    <label className="block text-sm text-gray-600 mb-1">Test Case {index + 1}</label>
+                                                </div>
                                                 <input
                                                     type="text"
                                                     value={testCase.test_case}
@@ -236,6 +311,7 @@ const ProblemsList = () => {
                                                 </button>
                                             )}
                                         </div>
+
                                     ))}
                                     <button
                                         type="button"
@@ -244,6 +320,11 @@ const ProblemsList = () => {
                                     >
                                         <span className="mr-1">+</span> Add Sample Test Case
                                     </button>
+                                    <div className="text-red-500 text-sm">
+                                        {errors.sampleTestCases && errors.sampleTestCases.map((error, index) => (
+                                            <div key={index}>{error}</div>
+                                        ))}
+                                    </div>
                                 </div>
 
                                 {/* Hidden Test Cases Section */}
@@ -254,6 +335,9 @@ const ProblemsList = () => {
                                     {formData.hiddenTestCases.map((testCase, index) => (
                                         <div key={`hidden-${index}`} className="mb-4 p-3 border rounded">
                                             <div className="mb-3">
+                                                <div className='flex justify-between items-center mb-2'>
+                                                    <label className="block text-sm text-gray-600 mb-1">Test Case {index + 1}</label>
+                                                </div>
                                                 <label className="block text-sm text-gray-600 mb-1">Test Case</label>
                                                 <input
                                                     type="text"
@@ -280,6 +364,7 @@ const ProblemsList = () => {
                                                     Remove
                                                 </button>
                                             )}
+
                                         </div>
                                     ))}
                                     <button
@@ -289,11 +374,16 @@ const ProblemsList = () => {
                                     >
                                         <span className="mr-1">+</span> Add Hidden Test Case
                                     </button>
+                                    <div className="text-red-500 text-sm">
+                                        {errors.hiddenTestCases && errors.hiddenTestCases.map((error, index) => (
+                                            <div key={index}>{error}</div>
+                                        ))}
+                                    </div>
                                 </div>
                                 <div>
                                     {errMessage && <p className="font-roboto text-1xl text-center text-red-400 mt-1 mb-2">{errMessage}</p>}
                                 </div>
-                                <button type="submit" className="font-roboto block w-full bg-blue-500 text-white font-bold p-4 rounded-lg hover:bg-blue-600 transition">Submit</button>
+                                <button type="submit" className="font-roboto block w-full bg-blue-500 text-white font-bold p-4 rounded-lg hover:bg-blue-600 transition">Add</button>
                             </form>
                         </div>
                     </div>
