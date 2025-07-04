@@ -1,5 +1,5 @@
 const express = require("express");
-const { problemsPage, problemPage, addProblemPage, createProblem } = require("../controller/oj-controller-problems");
+const { problemsPage, problemPage, addProblemPage, createProblem, getAllProblems } = require("../controller/oj-controller-problems");
 const router_problems = express.Router();
 
 
@@ -12,6 +12,7 @@ router_problems.get('/:id', problemPage); // Page to view a specific problem by 
 
 // create operations
 router_problems.post('/', createProblem); // Endpoint to create a new problem
+router_problems.post('/getProblems' , getAllProblems); // Endpoint to get all problems
 
 // router_problems.get('/problems/:id', problemPage);
 // router.post('/register', registerUser);

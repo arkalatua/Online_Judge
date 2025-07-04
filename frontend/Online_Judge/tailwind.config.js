@@ -8,8 +8,18 @@ export default {
     extend: {
       fontFamily: {
         lubrifont: [' "WDXL Lubrifont SC" ', 'sans-serif'],
-        roboto: ['Roboto', 'sans-serif'],
-      }
+        roboto: ['Roboto', 'sans-serif', 'Roboto mono'],
+
+      },
+      animation: {
+      fadeIn: 'fadeIn 0.4s ease-in-out',
+    },
+    keyframes: {
+      fadeIn: {
+        from: { opacity: 0 },
+        to: { opacity: 1 },
+      },
+    },
     },
   },
   plugins: [],

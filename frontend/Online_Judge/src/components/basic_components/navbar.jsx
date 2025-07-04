@@ -63,36 +63,56 @@ const Navbar = () => {
                     </svg>
                 </button>
                 <div className="hidden w-full md:block md:w-auto" id="navbar-default">
-                    <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white  ">
+                    <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white">
                         <li>
-                            <a href="/home" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-500 md:dark:hover:text-blue-700 dark:hover:bg-gray-100 dark:hover:text-gray-500 md:dark:hover:bg-transparent">Home</a>
+                            <a href="/home" className="block py-2 px-3 text-gray-900 hover:text-blue-700">Home</a>
                         </li>
                         <li>
-                            <a href="/problem" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-500 md:dark:hover:text-blue-700 dark:hover:bg-gray-100 dark:hover:text-gray-500 md:dark:hover:bg-transparent">Problems</a>
+                            <a href="/problems" className="block py-2 px-3 text-gray-900 hover:text-blue-700">Problems</a>
                         </li>
                         <li>
-                            <a href="/contest" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-500 md:dark:hover:text-blue-700 dark:hover:bg-gray-100 dark:hover:text-gray-500 md:dark:hover:bg-transparent">Contest</a>
+                            <a href="/contest" className="block py-2 px-3 text-gray-900 hover:text-blue-700">Contest</a>
                         </li>
                         <li>
-                            <a href="/discuss" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-500 md:dark:hover:text-blue-700 dark:hover:bg-gray-100 dark:hover:text-gray-500 md:dark:hover:bg-transparent">Discuss</a>
+                            <a href="/discuss" className="block py-2 px-3 text-gray-900 hover:text-blue-700">Discuss</a>
                         </li>
+
                         {user ? (
                             <>
-                                
                                 <li>
-                                    <button onClick={() => navigate('/profile')} className="text-blue-600 hover:underline">{name}</button>
+                                    <a
+                                        onClick={() => navigate('/profile')}
+                                        className="cursor-pointer block py-2 px-3 text-blue-600 hover:underline hover:text-blue-800"
+                                    >
+                                        {name}
+                                    </a>
                                 </li>
                                 <li>
-                                    <button onClick={handleLogout} className="text-red-500 hover:underline">Logout</button>
+                                    <a
+                                        onClick={handleLogout}
+                                        className="cursor-pointer block py-2 px-3 text-red-500 hover:underline hover:text-red-700"
+                                    >
+                                        Logout
+                                    </a>
                                 </li>
                             </>
                         ) : (
                             <>
                                 <li>
-                                    <button onClick={() => navigate('/login')} className="text-blue-600 hover:underline">Sign In</button>
+                                    <a
+                                        onClick={() => navigate('/login')}
+                                        className="cursor-pointer block py-2 px-3 text-blue-600 hover:underline hover:text-blue-800"
+                                    >
+                                        Sign In
+                                    </a>
                                 </li>
                                 <li>
-                                    <button onClick={() => navigate('/register')} className="text-blue-600 hover:underline">Register</button>
+                                    <a
+                                        onClick={() => navigate('/register')}
+                                        className="cursor-pointer block py-2 px-3 text-blue-600 hover:underline hover:text-blue-800"
+                                    >
+                                        Register
+                                    </a>
                                 </li>
                             </>
                         )}

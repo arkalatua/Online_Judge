@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const ProblemPage = () => {
     const navigate = useNavigate();
     const handleSuccessfulSubmit = () => {
-        navigate('/home');
+        navigate('/newProblemAdded');
     }
     return (
         <>

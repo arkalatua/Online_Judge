@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { registerUpload } from '../../service/api';
 import logo from '../../assets/logo.png';
-
+import { useDispatch } from 'react-redux';
+import { login } from '../../store/authSlice';
 
 const RegisterForm = ({ onSuccessfulSubmit }) => {
     const [formData, setFormData] = useState({
@@ -17,6 +18,8 @@ const RegisterForm = ({ onSuccessfulSubmit }) => {
         email: '',
         password: ''
     });
+
+    const dispatch = useDispatch();
 
     const [errMessage, setErrMessage] = useState('');
 
@@ -73,6 +76,8 @@ const RegisterForm = ({ onSuccessfulSubmit }) => {
             // Form submission logic here
             try {
                 const response = await registerUpload(formData);
+                dispatch(login({user: formData.email}));
+                localStorage.setItem("authToken" , formData.email);
                 onSuccessfulSubmit(response.data);
             } catch (error) {
                 console.error("Registration failed:", error);

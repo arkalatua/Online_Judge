@@ -241,6 +241,28 @@ const getUserNameFromEmail = async (req, res) => {
     }
 };
 
+const getUserNameFromId = async (req, res) => {
+    try {
+        const { userId } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({ message: "User ID is required" });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json({
+            name: `${user.firstName} ${user.lastName}`
+        });
+    } catch (error) {
+        console.error("Error in getUserNameFromId:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 
 module.exports = {
     homePage,
@@ -248,5 +270,6 @@ module.exports = {
     registerUser,
     loginPage,
     loginUser,
-    getUserNameFromEmail
+    getUserNameFromEmail,
+    getUserNameFromId
 };
