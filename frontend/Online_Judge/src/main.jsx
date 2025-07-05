@@ -10,6 +10,7 @@ import { store } from './store/store.js';
 import { Provider } from 'react-redux';
 import ProblemsPage from './components/main_components/ProblemsPage.jsx';
 import NewProblemAdded from './components/main_components/NewProblemAdded.jsx';
+import UserProblems from './components/main_components/UserProblems.jsx';
 
 
 createRoot(document.getElementById('root')).render(
@@ -25,6 +26,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/problems" element={<ProblemsPage />} />
           <Route path="/newProblemAdded" element={<NewProblemAdded />} />
           <Route path="/allProblems" element={<ProblemsPage />} />
+          <Route path="/userProblems" element={<UserProblems />} />
 
         </Routes>
       </Provider>

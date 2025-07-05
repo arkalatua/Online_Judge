@@ -1,11 +1,39 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-const AllProblems = () => {
+const UserMadeProblems = () => {
+
     const [problems, setProblems] = useState([]);
+    const user = localStorage.getItem("authToken");
 
-    const getUserName = async (userId) => {
+    const getUserId = async (user) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/getUserName`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/problems/getIdFromEmail`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: user })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return data.userId;
+            } else {
+                console.error("Failed to fetch ID:", data.message);
+            }
+        } catch (err) {
+            console.error("Error fetching ID:", err);
+        }
+    };
+
+    const fetchProblems = async () => {
+        try {
+            const userId = await getUserId(user);
+            if (!userId) {
+                console.error("User ID not found. Aborting fetch.");
+                return;
+            }
+
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/problems/getUserProblems`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userId })
@@ -14,34 +42,7 @@ const AllProblems = () => {
             const data = await response.json();
 
             if (response.ok) {
-                return data.name;
-            } else {
-                console.error("Failed to fetch name:", data.message);
-            }
-        } catch (err) {
-            console.error("Error fetching name:", err);
-        }
-    };
-
-    const fetchProblems = async () => {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/problems/getProblems`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                // Get all usernames in parallel
-                const problemsWithNames = await Promise.all(
-                    data.problems.map(async (problem) => {
-                        const name = await getUserName(problem.userId);
-                        return { ...problem, userName: name };
-                    })
-                );
-
-                setProblems(problemsWithNames);
+                setProblems(data.problems);
             } else {
                 console.error("Failed to fetch problems:", data.message);
             }
@@ -50,13 +51,16 @@ const AllProblems = () => {
         }
     };
 
+
     useEffect(() => {
         fetchProblems();
     }, []);
     return (
         <>
             <section className="animate-fadeIn">
-                <div className="relative overflow-x-auto shadow-lg rounded-2xl p-8 bg-white border border-gray-200 max-w-7xl mx-auto mt-8 mb-8">
+
+
+                <div className="relative overflow-x-auto shadow-lg rounded-2xl p-8 bg-white border border-gray-200 max-w-7xl mx-auto mt-8">
                     <h1 className="text-3xl font-extrabold text-blue-700 mb-6 text-center tracking-wide">
                         📘 All Coding Problems
                     </h1>
@@ -67,7 +71,7 @@ const AllProblems = () => {
                                 <th className="px-6 py-3 text-center">#</th>
                                 <th className="px-6 py-3">Title</th>
                                 <th className="px-6 py-3">Difficulty</th>
-                                <th className="px-6 py-3">Author</th>
+                                <th className="px-6 py-3">Created at</th>
                             </tr>
                         </thead>
 
@@ -89,7 +93,7 @@ const AllProblems = () => {
                                         <td className="px-6 py-4">
                                             <span
                                                 className={`px-3 py-1 rounded-full text-xs font-semibold
-                ${problem.difficulty === 'Easy'
+                        ${problem.difficulty === 'Easy'
                                                         ? 'bg-green-100 text-green-700'
                                                         : problem.difficulty === 'Medium'
                                                             ? 'bg-yellow-100 text-yellow-800'
@@ -114,4 +118,4 @@ const AllProblems = () => {
     );
 }
 
-export default AllProblems;
+export default UserMadeProblems;

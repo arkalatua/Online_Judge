@@ -184,7 +184,8 @@ const ProblemsList = ({ onSuccessfulSubmit }) => {
             // Form submission logic here
             try {
                 console.log('Form Data:', formData);
-                const response = await problemUpload({ ...formData,
+                const response = await problemUpload({
+                    ...formData,
                     email: user
                 });
                 onSuccessfulSubmit(response.data);
@@ -200,209 +201,198 @@ const ProblemsList = ({ onSuccessfulSubmit }) => {
             <div className="flex justify-center items-center h-20   bg-gray-200">
             </div>
             <div className="register-form">
-                <div className="bg-gray-200 min-h-screen flex items-center">
-                    <div className="w-full">
-                        <div className="bg-white p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/3">
-                            <form onSubmit={handleSubmit}>
-                                <div className="mb-5">
-                                    <img src={logo} alt='logo' className='w-40 h-30 mx-auto mb-5' />
-                                    <div className="font-roboto text-center text-2xl font-bold mb-5 text-gray-700">ADD NEW PROBLEM!!!</div>
-                                    <label htmlFor="firstName" className="font-roboto block mb-2 font-bold text-gray-600">Name for the Problem</label>
-                                    <input
-                                        type="text"
-                                        id="name"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        onKeyDown={handleKeyDown}
-                                        placeholder="Put in your name"
-                                        className={`border ${errors.name ? 'border-red-300' : 'border-gray-300'} shadow p-3 w-full rounded mb-`}
-                                    />
-                                    {errors.name && <p className="text-sm text-red-400 mt-2">{errors.name}</p>}
-                                </div>
-
-                                <div className="mb-5">
-                                    <label htmlFor="difficulty" className="font-roboto block mb-2 font-bold text-gray-600">
-                                        Difficulty
-                                    </label>
-                                    <select
-                                        id="difficulty"
-                                        name="difficulty"
-                                        value={formData.difficulty}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        className={`border ${errors.difficulty ? 'border-red-300' : 'border-gray-300'} shadow p-3 w-full rounded mb-`}
-                                    >
-                                        <option value="">Select difficulty</option>
-                                        <option value="Easy">Easy</option>
-                                        <option value="Medium">Medium</option>
-                                        <option value="Hard">Hard</option>
-                                    </select>
-                                    {errors.difficulty && <p className="text-sm text-red-400 mt-2">{errors.difficulty}</p>}
-                                </div>
-
-                                <div className="mb-5">
-                                    <label htmlFor="statement" className="font-roboto block mb-2 font-bold text-gray-600">Problem Statement:</label>
-                                    <input
-                                        type="text"
-                                        id="statement"
-                                        name="statement"
-                                        value={formData.statement}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        onKeyDown={handleKeyDown}
-                                        placeholder="Put in your statement."
-                                        className={`border ${errors.statement ? 'border-red-300' : 'border-gray-300'} shadow p-3 w-full rounded mb-`}
-                                    />
-                                    {errors.statement && <p className="text-sm text-red-400 mt-2">{errors.statement}</p>}
-                                </div>
-
-                                <div className="mb-5">
-                                    <label htmlFor="constraint" className="font-roboto block mb-2 font-bold text-gray-600">Constraints:</label>
-                                    <input
-                                        type="text"
-                                        id="constraint"
-                                        name="constraint"
-                                        value={formData.constraint}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        onKeyDown={handleKeyDown}
-                                        placeholder="Put a constraint."
-                                        className={`border ${errors.constraint ? 'border-red-300' : 'border-gray-300'} shadow p-3 w-full rounded mb-`}
-                                    />
-                                    {errors.constraint && <p className="text-sm text-red-400 mt-2">{errors.constraint}</p>}
-                                </div>
-
-                                {/* Sample Test Cases Section */}
-                                <div className="mb-5">
-                                    <label className="font-roboto block mb-2 font-bold text-gray-600">
-                                        Sample Test Cases
-                                    </label>
-                                    {formData.sampleTestCases.map((testCase, index) => (
-                                        <div key={`sample-${index}`} className="mb-4 p-3 border rounded">
-                                            <div className="mb-3">
-                                                <div className='flex justify-between items-center mb-2'>
-                                                    <label className="block text-sm text-gray-600 mb-1">Test Case {index + 1}</label>
-                                                </div>
-                                                <input
-                                                    type="text"
-                                                    value={testCase.test_case}
-                                                    onChange={(e) => handleTestCaseChange('sample', index, 'test_case', e.target.value)}
-                                                    className="border border-gray-300 shadow p-2 w-full rounded"
-                                                />
-                                            </div>
-                                            <div className="mb-3">
-                                                <label className="block text-sm text-gray-600 mb-1">Expected Output</label>
-                                                <input
-                                                    type="text"
-                                                    value={testCase.output}
-                                                    onChange={(e) => handleTestCaseChange('sample', index, 'output', e.target.value)}
-                                                    className="border border-gray-300 shadow p-2 w-full rounded"
-                                                />
-                                            </div>
-                                            <div className="mb-3">
-                                                <label className="block text-sm text-gray-600 mb-1">Explanation (Optional)</label>
-                                                <input
-                                                    type="text"
-                                                    value={testCase.explanation}
-                                                    onChange={(e) => handleTestCaseChange('sample', index, 'explanation', e.target.value)}
-                                                    className="border border-gray-300 shadow p-2 w-full rounded"
-                                                />
-                                            </div>
-                                            {index > 0 && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeTestCase('sample', index)}
-                                                    className="text-red-500 text-sm"
-                                                >
-                                                    Remove
-                                                </button>
-                                            )}
-                                        </div>
-
-                                    ))}
-                                    <button
-                                        type="button"
-                                        onClick={() => addTestCase('sample')}
-                                        className="flex items-center text-blue-500 text-sm"
-                                    >
-                                        <span className="mr-1">+</span> Add Sample Test Case
-                                    </button>
-                                    <div className="text-red-500 text-sm">
-                                        {errors.sampleTestCases && errors.sampleTestCases.map((error, index) => (
-                                            <div key={index}>{error}</div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Hidden Test Cases Section */}
-                                <div className="mb-5">
-                                    <label className="font-roboto block mb-2 font-bold text-gray-600">
-                                        Hidden Test Cases
-                                    </label>
-                                    {formData.hiddenTestCases.map((testCase, index) => (
-                                        <div key={`hidden-${index}`} className="mb-4 p-3 border rounded">
-                                            <div className="mb-3">
-                                                <div className='flex justify-between items-center mb-2'>
-                                                    <label className="block text-sm text-gray-600 mb-1">Test Case {index + 1}</label>
-                                                </div>
-                                                <label className="block text-sm text-gray-600 mb-1">Test Case</label>
-                                                <input
-                                                    type="text"
-                                                    value={testCase.test_case}
-                                                    onChange={(e) => handleTestCaseChange('hidden', index, 'test_case', e.target.value)}
-                                                    className="border border-gray-300 shadow p-2 w-full rounded"
-                                                />
-                                            </div>
-                                            <div className="mb-3">
-                                                <label className="block text-sm text-gray-600 mb-1">Expected Output</label>
-                                                <input
-                                                    type="text"
-                                                    value={testCase.output}
-                                                    onChange={(e) => handleTestCaseChange('hidden', index, 'output', e.target.value)}
-                                                    className="border border-gray-300 shadow p-2 w-full rounded"
-                                                />
-                                            </div>
-                                            {index > 0 && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeTestCase('hidden', index)}
-                                                    className="text-red-500 text-sm"
-                                                >
-                                                    Remove
-                                                </button>
-                                            )}
-
-                                        </div>
-                                    ))}
-                                    <button
-                                        type="button"
-                                        onClick={() => addTestCase('hidden')}
-                                        className="flex items-center text-blue-500 text-sm"
-                                    >
-                                        <span className="mr-1">+</span> Add Hidden Test Case
-                                    </button>
-                                    <div className="text-red-500 text-sm">
-                                        {errors.hiddenTestCases && errors.hiddenTestCases.map((error, index) => (
-                                            <div key={index}>{error}</div>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div>
-                                    {errMessage && <p className="font-roboto text-1xl text-center text-red-400 mt-1 mb-2">{errMessage}</p>}
-                                </div>
-                                <button type="submit" className="font-roboto block w-full bg-blue-500 text-white font-bold p-4 rounded-lg hover:bg-blue-600 transition">Add</button>
-                                {user ? (
-                                    <>
-                                    </>
-                                ) : (
-                                    <>
-                                        <p className="font-roboto text-1xl text-center text-red-500 mt-2">Please login to add a problem.</p>
-                                    </>
-                                )}
-                            </form>
+                <div className="bg-gray-100 min-h-screen py-10">
+                    <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
+                        <div className="text-center mb-6">
+                            <img src={logo} alt="logo" className="w-32 mx-auto mb-4" />
+                            <h2 className="text-2xl font-semibold text-gray-800">Add a New Problem</h2>
                         </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            {/* Problem Name */}
+                            <div>
+                                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Problem Name</label>
+                                <input
+                                    id="name"
+                                    name="name"
+                                    type="text"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    className={`mt-1 block w-full border ${errors.name ? 'border-red-400' : 'border-gray-300'} rounded-md shadow-sm p-2`}
+                                />
+                                {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+                            </div>
+
+                            {/* Difficulty */}
+                            <div>
+                                <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700">Difficulty</label>
+                                <select
+                                    id="difficulty"
+                                    name="difficulty"
+                                    value={formData.difficulty}
+                                    onChange={handleChange}
+                                    className={`mt-1 block w-full border ${errors.difficulty ? 'border-red-400' : 'border-gray-300'} rounded-md shadow-sm p-2`}
+                                >
+                                    <option value="">Select Difficulty</option>
+                                    <option value="Easy">Easy</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Hard">Hard</option>
+                                </select>
+                                {errors.difficulty && <p className="text-sm text-red-500 mt-1">{errors.difficulty}</p>}
+                            </div>
+
+                            {/* Statement */}
+                            <div>
+                                <label htmlFor="statement" className="block text-sm font-medium text-gray-700">Problem Statement</label>
+                                <textarea
+                                    id="statement"
+                                    name="statement"
+                                    rows="4"
+                                    value={formData.statement}
+                                    onChange={handleChange}
+                                    className={`mt-1 block w-full border ${errors.statement ? 'border-red-400' : 'border-gray-300'} rounded-md shadow-sm p-2`}
+                                />
+                                {errors.statement && <p className="text-sm text-red-500 mt-1">{errors.statement}</p>}
+                            </div>
+
+                            {/* Constraints */}
+                            <div>
+                                <label htmlFor="constraint" className="block text-sm font-medium text-gray-700">Constraints</label>
+                                <textarea
+                                    id="constraint"
+                                    name="constraint"
+                                    rows="3"
+                                    value={formData.constraint}
+                                    onChange={handleChange}
+                                    className={`mt-1 block w-full border ${errors.constraint ? 'border-red-400' : 'border-gray-300'} rounded-md shadow-sm p-2`}
+                                />
+                                {errors.constraint && <p className="text-sm text-red-500 mt-1">{errors.constraint}</p>}
+                            </div>
+
+                            {/* Sample Test Cases */}
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2 text-gray-700">Sample Test Cases</h3>
+                                {formData.sampleTestCases.map((testCase, index) => (
+                                    <div key={index} className="border rounded p-4 mb-3 bg-gray-50">
+                                        <div className="mb-2">
+                                            <label className="block text-sm text-gray-600">Input</label>
+                                            <input
+                                                type="text"
+                                                value={testCase.test_case}
+                                                onChange={(e) => handleTestCaseChange('sample', index, 'test_case', e.target.value)}
+                                                className="w-full border border-gray-300 rounded p-2"
+                                            />
+                                        </div>
+                                        <div className="mb-2">
+                                            <label className="block text-sm text-gray-600">Expected Output</label>
+                                            <input
+                                                type="text"
+                                                value={testCase.output}
+                                                onChange={(e) => handleTestCaseChange('sample', index, 'output', e.target.value)}
+                                                className="w-full border border-gray-300 rounded p-2"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm text-gray-600">Explanation (Optional)</label>
+                                            <input
+                                                type="text"
+                                                value={testCase.explanation}
+                                                onChange={(e) => handleTestCaseChange('sample', index, 'explanation', e.target.value)}
+                                                className="w-full border border-gray-300 rounded p-2"
+                                            />
+                                        </div>
+                                        {index > 0 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => removeTestCase('sample', index)}
+                                                className="text-sm text-red-500 mt-2"
+                                            >
+                                                Remove Test Case
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={() => addTestCase('sample')}
+                                    className="text-blue-600 text-sm mt-1 hover:underline"
+                                >
+                                    + Add Sample Test Case
+                                </button>
+                                {errors.sampleTestCases?.length > 0 && (
+                                    <p className="text-sm text-red-500 mt-1">{errors.sampleTestCases[0]}</p>
+                                )}
+                            </div>
+
+                            {/* Hidden Test Cases */}
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2 text-gray-700">Hidden Test Cases</h3>
+                                {formData.hiddenTestCases.map((testCase, index) => (
+                                    <div key={index} className="border rounded p-4 mb-3 bg-gray-50">
+                                        <div className="mb-2">
+                                            <label className="block text-sm text-gray-600">Input</label>
+                                            <input
+                                                type="text"
+                                                value={testCase.test_case}
+                                                onChange={(e) => handleTestCaseChange('hidden', index, 'test_case', e.target.value)}
+                                                className="w-full border border-gray-300 rounded p-2"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm text-gray-600">Expected Output</label>
+                                            <input
+                                                type="text"
+                                                value={testCase.output}
+                                                onChange={(e) => handleTestCaseChange('hidden', index, 'output', e.target.value)}
+                                                className="w-full border border-gray-300 rounded p-2"
+                                            />
+                                        </div>
+                                        {index > 0 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => removeTestCase('hidden', index)}
+                                                className="text-sm text-red-500 mt-2"
+                                            >
+                                                Remove Hidden Test Case
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={() => addTestCase('hidden')}
+                                    className="text-blue-600 text-sm mt-1 hover:underline"
+                                >
+                                    + Add Hidden Test Case
+                                </button>
+                                {errors.hiddenTestCases?.length > 0 && (
+                                    <p className="text-sm text-red-500 mt-1">{errors.hiddenTestCases[0]}</p>
+                                )}
+                            </div>
+
+                            {/* Error Message */}
+                            {errMessage && (
+                                <p className="text-center text-sm text-red-600">{errMessage}</p>
+                            )}
+
+                            {/* Submit Button */}
+                            <div className="text-center">
+                                <button
+                                    type="submit"
+                                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition"
+                                >
+                                    Submit Problem
+                                </button>
+                            </div>
+
+                            {/* Login reminder */}
+                            {!user && (
+                                <p className="text-center text-sm text-red-500 mt-4">
+                                    Please login to add a problem.
+                                </p>
+                            )}
+                        </form>
                     </div>
                 </div>
             </div>

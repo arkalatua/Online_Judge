@@ -4,20 +4,15 @@ import logo from '../../assets/logo.png';
 import { useDispatch } from "react-redux";
 import { login } from '../../store/authSlice';
 
-const LoginForm = ({ onSuccessfulSubmit}) => {
+const LoginForm = ({ onSuccessfulSubmit }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
 
-    const [errors, setErrors] = useState({
-        email: '',
-        password: ''
-    });
-
-    const dispatch = useDispatch();
-
+    const [errors, setErrors] = useState({});
     const [errMessage, setErrMessage] = useState('');
+    const dispatch = useDispatch();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -25,7 +20,6 @@ const LoginForm = ({ onSuccessfulSubmit}) => {
             ...prev,
             [name]: value
         }));
-        // Clear error when user starts typing
         if (errors[name]) {
             setErrors(prev => ({
                 ...prev,
@@ -46,8 +40,7 @@ const LoginForm = ({ onSuccessfulSubmit}) => {
     };
 
     const handleBlur = (e) => {
-        const { name, value } = e.target;
-        validateField(name, value);
+        validateField(e.target.name, e.target.value);
     };
 
     const handleKeyDown = (e) => {
@@ -61,7 +54,6 @@ const LoginForm = ({ onSuccessfulSubmit}) => {
         e.preventDefault();
         let isValid = true;
 
-        // Validate all fields
         Object.entries(formData).forEach(([name, value]) => {
             if (!validateField(name, value)) {
                 isValid = false;
@@ -69,7 +61,6 @@ const LoginForm = ({ onSuccessfulSubmit}) => {
         });
 
         if (isValid) {
-            // Form submission logic here
             try {
                 const response = await loginUpload(formData);
                 dispatch(login({ user: formData.email }));
@@ -81,67 +72,69 @@ const LoginForm = ({ onSuccessfulSubmit}) => {
             }
         }
     };
-    return (
-        <>
-            <div className="flex justify-center items-center h-20   bg-gray-200">
-            </div>
-            <div className="login-form">
-                <div className="bg-gray-200 min-h-screen flex items-center">
-                    <div className="w-full">
-                        <div className="bg-white p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/3">
-                            <form onSubmit={handleSubmit}>
-                                <div className="mb-5">
-                                    <img src={logo} alt='logo' className='w-40 h-30 mx-auto mb-5' />
-                                </div>
-                                <div className="mb-5">
-                                    <label htmlFor="email" className="font-roboto block mb-2 font-bold text-gray-600">Email Address:</label>
-                                    <input
-                                        type="email"
-                                        id="email"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        onKeyDown={handleKeyDown}
-                                        placeholder="Put in your email."
-                                        className={`border ${errors.email ? 'border-red-300' : 'border-gray-300'} shadow p-3 w-full rounded mb-`}
-                                    />
-                                    {errors.email && <p className="text-sm text-red-400 mt-2">{errors.email}</p>}
-                                </div>
 
-                                <div className="mb-5">
-                                    <label htmlFor="password" className="font-roboto block mb-2 font-bold text-gray-600">Password:</label>
-                                    <input
-                                        type="password"
-                                        id="password"
-                                        name="password"
-                                        value={formData.password}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        onKeyDown={handleKeyDown}
-                                        placeholder="Put a password."
-                                        className={`border ${errors.password ? 'border-red-300' : 'border-gray-300'} shadow p-3 w-full rounded mb-`}
-                                    />
-                                    {errors.password && <p className="text-sm text-red-400 mt-2">{errors.password}</p>}
-                                </div>
-                                <div className="text-right mb-5">
-                                    <span className="font-roboto text-gray-600">Don't have an account?</span>
-                                    <a href="/register" className="text-blue-500 hover:underline">Register here</a>
-                                </div>
-                                <div>
-                                    {errMessage && <p className="font-roboto text-center text-sm text-red-400 mb-4">{errMessage}</p>}
-                                </div>
-                                <button type="submit" className="font-roboto block w-full bg-blue-500 text-white font-bold p-4 rounded-lg hover:bg-blue-600 transition">Submit</button>
-                            </form>
-                        </div>
+    return (
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-md space-y-6">
+                <div className="text-center">
+                    <img src={logo} alt="logo" className="mx-auto w-28 h-auto mb-4" />
+                    <h2 className="text-2xl font-bold text-gray-800">Login</h2>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            onKeyDown={handleKeyDown}
+                            placeholder="Enter your email"
+                            className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+                                errors.email ? 'border-red-400' : 'border-gray-300'
+                            }`}
+                        />
+                        {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
                     </div>
+
+                    <div>
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            onKeyDown={handleKeyDown}
+                            placeholder="Enter your password"
+                            className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+                                errors.password ? 'border-red-400' : 'border-gray-300'
+                            }`}
+                        />
+                        {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
+                    </div>
+
+                    {errMessage && <p className="text-center text-red-500 text-sm">{errMessage}</p>}
+
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
+                    >
+                        Submit
+                    </button>
+                </form>
+
+                <div className="text-center text-sm">
+                    <span className="text-gray-600">Don't have an account? </span>
+                    <a href="/register" className="text-blue-500 hover:underline">Register here</a>
                 </div>
             </div>
-            <div className="flex justify-center items-center h-20 bg-gray-200">
-            </div>
-        </>
-
+        </div>
     );
-}
+};
 
 export default LoginForm;

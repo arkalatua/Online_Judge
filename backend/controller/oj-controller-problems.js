@@ -96,11 +96,37 @@ const fetchUserIdFromEmail = async (email) => {
     return user_._id;
 };
 
+const getUserIdFromEmail = async (req , res) => {
+    try {
+        const email = req.body.email;
+        const userId = await fetchUserIdFromEmail(email);
+        res.status(200).json({ userId });
+    } catch (error) {
+        console.error('Error fetching user ID:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const getUserProblems = async (req, res) => {
+    try {
+        const { userId } = req.body;
+        if (!userId) {
+            return res.status(400).json({ error: 'User ID is required' });
+        }
+        const problems = await Problem.find({ userId: userId });
+        res.status(200).json({ problems });
+    } catch (error) {
+        console.error('Error fetching user problems:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 module.exports = {
     problemsPage,
     problemPage,
     addProblemPage,
     createProblem,
-    getAllProblems
+    getAllProblems,
+    getUserIdFromEmail,
+    getUserProblems
 };

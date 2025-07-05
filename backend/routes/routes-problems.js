@@ -1,5 +1,5 @@
 const express = require("express");
-const { problemsPage, problemPage, addProblemPage, createProblem, getAllProblems } = require("../controller/oj-controller-problems");
+const { problemsPage, problemPage, addProblemPage, createProblem, getAllProblems, getUserIdFromEmail, getUserProblems } = require("../controller/oj-controller-problems");
 const router_problems = express.Router();
 
 
@@ -13,11 +13,10 @@ router_problems.get('/:id', problemPage); // Page to view a specific problem by 
 // create operations
 router_problems.post('/', createProblem); // Endpoint to create a new problem
 router_problems.post('/getProblems' , getAllProblems); // Endpoint to get all problems
+router_problems.post('/getIdFromEmail', getUserIdFromEmail); // Endpoint to get user ID from email
+router_problems.post('/getUserProblems', getUserProblems); // Endpoint to get user problems by user ID
 
 // router_problems.get('/problems/:id', problemPage);
-// router.post('/register', registerUser);
-// router.get('/login', loginPage);
-// router.post("/login" , loginUser);
 
 // Exporting the router to be used in the main app
 module.exports = router_problems;

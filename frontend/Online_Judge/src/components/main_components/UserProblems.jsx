@@ -1,14 +1,14 @@
-import Navbar from "../basic_components/navbar";
 import Footer from "../basic_components/footer";
-import AllProblems from "../basic_components/allProblems";
+import Navbar from "../basic_components/navbar";
+import UserMadeProblems from "../basic_components/userProblems";
 
-const ProblemsPage = () => {
+const UserProblems = () => {
     return (
         <div className="min-h-screen flex flex-col">
             <Navbar />
 
             <main className="flex-grow">
-                <AllProblems />
+                <UserMadeProblems />
             </main>
 
             <Footer />
@@ -16,4 +16,4 @@ const ProblemsPage = () => {
     );
 };
 
-export default ProblemsPage;
+export default UserProblems;
